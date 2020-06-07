@@ -11,9 +11,17 @@ import UIKit
 class ToDoListVC: UITableViewController {
     
     var ItemArray = ["Find Mike","Buy Eggos","Destroy Demogoron"]
+    
+    var defaults = UserDefaults.standard
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        if let Items = defaults.array(forKey: "TodoListArray") as? [String] {
+            
+            ItemArray = Items
+            
+        }
 
     }
     
@@ -42,9 +50,12 @@ class ToDoListVC: UITableViewController {
         
         // To Highlighted row
         tableView.deselectRow(at: indexPath, animated: true)
-        
+        if tableView.cellForRow(at: indexPath)?.accessoryType == .checkmark{
         // TO give checkmark to Row
-        tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
+        tableView.cellForRow(at: indexPath)?.accessoryType = .none
+        } else {
+            tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
+        }
         
         
     }
@@ -58,6 +69,8 @@ class ToDoListVC: UITableViewController {
         let action = UIAlertAction(title: "Add Item", style: .default) { (action) in
             
             self.ItemArray.append(textField.text! )
+            
+            self.defaults.set(self.ItemArray, forKey: "TodoListArray")
             
             self.tableView.reloadData()
           }
